@@ -1,0 +1,14 @@
+---
+- name: set fact for requirements_dest
+  set_fact:
+    requirements_dest: /tmp/requirements.txt
+
+- name: copy requirements to remote server
+  copy:
+    src: "{{requirements_path}}"
+    dest: "{{requirements_dest}}"
+
+- name: pip install -r requirements
+  become: yes
+  pip:
+    requirements: "{{requirements_dest}}"

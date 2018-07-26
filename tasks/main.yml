@@ -1,0 +1,98 @@
+---
+
+- name: apt install deps
+  become: yes
+  apt:
+    state: latest
+    name:
+      - libx11-dev
+      - libxtst-dev
+      - xorg-dev  # for +clipboard
+      - xsel  # for vim clipboard in vscode
+      - exuberant-ctags  # for tagbar
+      - silversearcher-ag  # ag and ctrlp
+      - cmake
+  when: ansible_pkg_mgr == 'apt'
+
+- name: brew install deps
+  become: no
+  homebrew:
+    state: latest
+    update_homebrew: yes
+    name:
+      - zsh
+      - zsh-completions
+      - ctags-exuberant
+      - the_silver_searcher
+      - reattach-to-user-namespace
+  when: ansible_pkg_mgr == 'homebrew'
+
+- name: get latest vim code
+  git:
+    repo: "{{git_repo}}"
+    dest: "{{git_dest}}"
+    version: "{{git_version}}"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: config, compile and install vim
+  become: yes
+  command: "{{item}}"
+  args:
+    chdir: "{{git_dest}}"
+  loop:
+    - make distclean
+    - >
+      ./configure
+      --prefix={{configure_prefix}}
+      --with-features={{configure_with_features}}
+      --with-x
+      --enable-gui=auto
+      --enable-pythoninterp
+      --enable-python3interp
+      --enable-rubyinterp
+    - make
+    - make install
+
+- name: include task from requirements.yml
+  include_tasks: requirements.yml
+  when: requirements_path is defined
+
+- name: copy vimrc if not exists
+  copy:
+    src: "{{config_src}}"
+    dest: "{{config_dest}}"
+    force: no
+
+- name: slurp config file content from remote
+  slurp:
+    src: "{{config_dest}}"
+  register: slurp_task
+  tags:
+    - vundle
+    - ycm
+
+- name: set fact for config file content
+  set_fact:
+    vimrc: "{{slurp_task.content|b64decode}}"
+  tags:
+    - vundle
+    - ycm
+
+- debug: var=vimrc
+  tags:
+    - vundle
+    - ycm
+
+- name: include task from Vundle.yml
+  include_tasks: Vundle.yml
+  when: '"Vundle" in vimrc'
+  tags:
+    - vundle
+
+- name: include task from ycm.yml
+  include_tasks: ycm.yml
+  when: '"YouCompleteMe" in vimrc'
+  tags:
+    - ycm

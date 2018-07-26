@@ -1,0 +1,12 @@
+---
+
+- name: update and install YouCompleteMe
+  command: "{{item}}"
+  args:
+    chdir: "{{bundle_root}}/YouCompleteMe"
+  loop:
+    - git pull
+    - git submodule update --init --recursive
+    - python3 install.py
+  tags:
+    - ycm
