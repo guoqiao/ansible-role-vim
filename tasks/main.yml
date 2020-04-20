@@ -12,6 +12,8 @@
       - exuberant-ctags  # for tagbar
       - silversearcher-ag  # ag and ctrlp
       - cmake
+      - python3-pip
+      - libncurses5-dev
   when: ansible_pkg_mgr == 'apt'
 
 - name: brew install deps
