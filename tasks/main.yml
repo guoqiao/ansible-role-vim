@@ -61,6 +61,9 @@
   include_tasks: requirements.yml
   when: requirements_path is defined
 
+- name: Ensures {{config_root}} dir exists
+  file: path={{config_root}} state=directory
+
 - name: copy vimrc if not exists
   copy:
     src: "{{config_src}}"
