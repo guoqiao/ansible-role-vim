@@ -57,6 +57,12 @@
     - make
     - make install
 
+- name: Unistall VIM if it is installed from the repository
+  become: yes
+  apt:
+    name: vim
+    state: absent
+
 - name: include task from requirements.yml
   include_tasks: requirements.yml
   when: requirements_path is defined
