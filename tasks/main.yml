@@ -70,6 +70,14 @@
 - name: Ensures {{config_root}} dir exists
   file: path={{config_root}} state=directory
 
+- name: stat .vimrc
+  stat: path={{config_dest}}
+  register: vimrc_stat
+
+- name: Move vimrc to vimrc.old
+  command: mv {{config_dest}} {{config_dest}}.old
+  when: vimrc_stat.stat.exists
+
 - name: copy vimrc if not exists
   copy:
     src: "{{config_src}}"

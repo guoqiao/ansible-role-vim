@@ -1,5 +1,4 @@
 syntax on
-syntax enable
 
 filetype indent plugin on
 
@@ -38,3 +37,18 @@ set expandtab
 
 autocmd FileType html,xml,yaml,css,scss,javascript setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
 autocmd FileType c          setlocal shiftwidth=8 softtabstop=8 tabstop=8 noexpandtab
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+" YouCompleteMe is a fast, as-you-type, fuzzy-search code completion engine for Vim.
+Plugin 'ycm-core/YouCompleteMe'
+
+Plugin 'morhetz/gruvbox'
+
+call vundle#end()
+
+colorscheme gruvbox
+set background=dark
