@@ -43,13 +43,13 @@ sudo apt install ansible
 sudo apt install git
 mkdir vim_DIY
 cd vim_DIY
-git clone https://github.com/pesarkhobeee/ansible-role-vim.git vim
+git clone https://github.com/DevopsishFriends/DevopsishVim.git
 cat >> DIY.yml <<EOF
 - name: vim role
   hosts: 127.0.0.1
   connection: local
   roles:
-    - role: vim
+    - role: DevopsishVim
 EOF
 ansible-playbook -e ansible_python_interpreter=$(which python3)  --ask-become-pass -i localhost, DIY.yml
 ```
