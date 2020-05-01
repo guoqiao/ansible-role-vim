@@ -9,7 +9,7 @@ This role will:
 Requirements
 ------------
 
-The target hosts need to have `apt` or `homebrew` to install deb packages.
+The target hosts need to have `apt` to install deb packages.
 
 Role Variables
 --------------
@@ -54,12 +54,19 @@ EOF
 ansible-playbook -e ansible_python_interpreter=$(which python3)  --ask-become-pass -i localhost, DIY.yml
 ```
 
+ToDo
+----
+
+* Do not let Ansible clone the VIM source if the latest version is already cloned
+
 License
 -------
 
 MIT
 
-Author Information
+Authors Information
 ------------------
 
-guoqiao, a Python Developer living in New Zealand.
+* https://github.com/guoqiao
+* https://github.com/pesarkhobeee
+
