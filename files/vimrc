@@ -1,54 +1,18 @@
-syntax on
 
-filetype indent plugin on
+call plug#begin()
 
-let mapleader = "\<Space>"
-let loaded_matchparen = 1 " disable math parenthiese
+" A small sensible Vim configuration
+Plug 'tpope/vim-sensible'
 
-nnoremap ; :
-nnoremap 0 ^
+" A code-completion engine for Vim
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
-set number
-set ruler
-set scrolloff=10
+" Retro groove color scheme for Vim 
+Plug 'morhetz/gruvbox'
 
-set noswapfile
-set backspace=indent,eol,start
-set clipboard=unnamed
-set iskeyword+=-
+" Initialize plugin system
+call plug#end()
 
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-
-set foldmethod=indent
-set foldlevel=99
-
-set autoindent
-set smartindent
-set copyindent
-set cindent
-
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
-set expandtab
-
-autocmd FileType html,xml,yaml,css,scss,javascript setlocal shiftwidth=2 softtabstop=2 tabstop=2 expandtab
-autocmd FileType c          setlocal shiftwidth=8 softtabstop=8 tabstop=8 noexpandtab
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-" YouCompleteMe is a fast, as-you-type, fuzzy-search code completion engine for Vim.
-Plugin 'ycm-core/YouCompleteMe'
-
-Plugin 'morhetz/gruvbox'
-
-call vundle#end()
-
-colorscheme gruvbox
+silent! colorscheme gruvbox
 set background=dark
+

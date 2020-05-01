@@ -55,50 +55,69 @@
   when: requirements_path is defined
 
 - name: Ensures {{config_root}} dir exists
-  file: path={{config_root}} state=directory
+  file: 
+    path: "{{config_root}}"
+    state: directory
+    recurse: yes
+  tags:
+    - plug
 
 - name: stat .vimrc
   stat: path={{config_dest}}
   register: vimrc_stat
+  tags:
+    - plug
 
 - name: Move vimrc to vimrc.old
   command: mv {{config_dest}} {{config_dest}}.old
   when: vimrc_stat.stat.exists
+  tags:
+    - plug
 
 - name: copy vimrc if not exists
   copy:
     src: "{{config_src}}"
     dest: "{{config_dest}}"
     force: no
+  tags:
+    - plug
 
 - name: slurp config file content from remote
   slurp:
     src: "{{config_dest}}"
   register: slurp_task
   tags:
-    - vundle
-    - ycm
+    - plug
 
 - name: set fact for config file content
   set_fact:
     vimrc: "{{slurp_task.content|b64decode}}"
   tags:
-    - vundle
-    - ycm
+    - plug
 
 - debug: var=vimrc
   tags:
-    - vundle
-    - ycm
+    - plug
 
-- name: include task from Vundle.yml
-  include_tasks: Vundle.yml
-  when: '"Vundle" in vimrc'
+- name: include task from vimPlug.yml
+  include_tasks: vimPlug.yml
+  when: '"Plug" in vimrc'
   tags:
-    - vundle
+    - plug
 
-- name: include task from ycm.yml
-  include_tasks: ycm.yml
-  when: '"YouCompleteMe" in vimrc'
+- name: display post install message
+  debug:
+    msg:
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***                                                     ***'
+      - '*** Things left to do:                                  ***'
+      - '***   - import your vimrc settings if you have          ***'
+      - '***   - run :PlugInstall to install all the plugins     ***'
+      - '***                                                     ***'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
   tags:
-    - ycm
+    - plug

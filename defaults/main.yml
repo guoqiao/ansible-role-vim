@@ -14,4 +14,4 @@ config_root: "~/.vim"
 # change this to your own vimrc if you like
 config_src: "files/vimrc"
 config_dest: "{{config_root}}/vimrc"
-bundle_root: "{{config_root}}/bundle"
+vimplug_dest_path: "{{config_root}}/autoload"

@@ -1,0 +1,24 @@
+---
+
+- name: Make sure  "{{ vimplug_dest_path}}" dir exists
+  file:
+    path: "{{ vimplug_dest_path}}"
+    state: directory
+    recurse: yes
+  tags:
+    - plug
+
+- name: Get the vim Plug 
+  get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest:  '{{vimplug_dest_path}}/plug.vim'
+  tags:
+    - plug
+
+- name: Run vimPlug install
+  shell: vim -c ":PlugInstall gruvbox vim-sensible" -c q -c q 
+  tags:
+    - plug
+  register: plug
+
+- debug: msg="{{ plug.stderr }}"
