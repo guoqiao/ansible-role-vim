@@ -1,123 +1,42 @@
 ---
 
-- name: apt install deps
-  become: yes
-  apt:
-    state: latest
-    name:
-      - libx11-dev
-      - libxtst-dev
-      - xorg-dev  # for +clipboard
-      - xsel  # for vim clipboard in vscode
-      - exuberant-ctags  # for tagbar
-      - silversearcher-ag  # ag and ctrlp
-      - cmake
-      - python3-pip
-      - libncurses5-dev
-  when: ansible_pkg_mgr == 'apt'
-
-- name: get latest vim code
-  git:
-    repo: "{{git_repo}}"
-    dest: "{{git_dest}}"
-    version: "{{git_version}}"
-    clone: yes
-    update: yes
-    force: yes
-
-- name: config, compile and install vim
-  become: yes
-  command: "{{item}}"
-  args:
-    chdir: "{{git_dest}}"
-  loop:
-    - make distclean
-    - >
-      ./configure
-      --prefix={{configure_prefix}}
-      --with-features={{configure_with_features}}
-      --with-x
-      --enable-gui=auto
-      --enable-pythoninterp
-      --enable-python3interp
-      --enable-rubyinterp
-    - make
-    - make install
-
-- name: Unistall VIM if it is installed from the repository
-  become: yes
-  apt:
-    name: vim
-    state: absent
-
-- name: include task from requirements.yml
-  include_tasks: requirements.yml
-  when: requirements_path is defined
-
-- name: Ensures {{config_root}} dir exists
-  file: 
-    path: "{{config_root}}"
-    state: directory
-    recurse: yes
-  tags:
-    - plug
-
-- name: stat .vimrc
-  stat: path={{config_dest}}
-  register: vimrc_stat
-  tags:
-    - plug
-
-- name: Move vimrc to vimrc.old
-  command: mv {{config_dest}} {{config_dest}}.old
-  when: vimrc_stat.stat.exists
-  tags:
-    - plug
-
-- name: copy vimrc if not exists
-  copy:
-    src: "{{config_src}}"
-    dest: "{{config_dest}}"
-    force: no
-  tags:
-    - plug
-
-- name: slurp config file content from remote
-  slurp:
-    src: "{{config_dest}}"
-  register: slurp_task
-  tags:
-    - plug
-
-- name: set fact for config file content
-  set_fact:
-    vimrc: "{{slurp_task.content|b64decode}}"
-  tags:
-    - plug
-
-- debug: var=vimrc
-  tags:
-    - plug
-
-- name: include task from vimPlug.yml
-  include_tasks: vimPlug.yml
-  when: '"Plug" in vimrc'
-  tags:
-    - plug
-
-- name: display post install message
+- name: display compile message
   debug:
     msg:
       - '***********************************************************'
       - '***********************************************************'
       - '***********************************************************'
       - '***                                                     ***'
-      - '*** Things left to do:                                  ***'
-      - '***   - import your vimrc settings if you have          ***'
-      - '***   - run :PlugInstall to install all the plugins     ***'
+      - '*** We are going to compile and install Vim from source ***'
+      - '*** Warning: This will try to unistall Vim first        ***'
       - '***                                                     ***'
       - '***********************************************************'
       - '***********************************************************'
       - '***********************************************************'
   tags:
-    - plug
+    - compile
+
+- name: include task from comile.yml
+  include_tasks: compile.yml
+  tags:
+    - compile
+
+- name: display vimrc message
+  debug:
+    msg:
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***                                                     ***'
+      - '*** We are going to copy the choosen vimrc file         ***'
+      - '***                                                     ***'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
+  tags:
+    - vimrc
+
+- name: include task from vimrc.yml
+  include_tasks: vimrc.yml
+  tags:
+    - vimrc

@@ -1,0 +1,90 @@
+---
+
+- name: include task from requirements.yml
+  include_tasks: requirements.yml
+  when: requirements_path is defined
+  tags:
+    - vimrc
+
+- name: Ensures {{config_root}} dir exists
+  file: 
+    path: "{{config_root}}"
+    state: directory
+    recurse: yes
+  tags:
+    - vimrc
+
+- name: stat .vimrc
+  stat: path={{config_dest}}
+  register: vimrc_stat
+  tags:
+    - vimrc
+
+- name: Move vimrc to vimrc.old
+  command: mv {{config_dest}} {{config_dest}}.old
+  when: vimrc_stat.stat.exists
+  tags:
+    - vimrc
+
+- name: copy the minimal vimrc if not exists
+  copy:
+    src: "{{config_src}}_minimal"
+    dest: "{{config_dest}}"
+    force: no
+  tags:
+    - vimrc
+  when: vimrc_mode == "minimal"
+
+- name: copy the full vimrc if not exists
+  copy:
+    src: "{{config_src}}_full"
+    dest: "{{config_dest}}"
+    force: no
+  tags:
+    - vimrc
+  when: vimrc_mode == "full"
+
+- name: slurp config file content from remote
+  slurp:
+    src: "{{config_dest}}"
+  register: slurp_task
+  tags:
+    - plug
+    - vimrc
+
+- name: set fact for config file content
+  set_fact:
+    vimrc: "{{slurp_task.content|b64decode}}"
+  tags:
+    - plug
+    - vimrc
+
+- debug: var=vimrc
+  tags:
+    - plug
+    - vimrc
+
+- name: include task from vimPlug.yml
+  include_tasks: vimPlug.yml
+  when: '"Plug" in vimrc'
+  tags:
+    - plug
+    - vimrc
+
+- name: display post install message
+  debug:
+    msg:
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***                                                     ***'
+      - '*** Things left to do:                                  ***'
+      - '***   - import your vimrc settings if you have          ***'
+      - '***   - run :PlugInstall to install all the plugins     ***'
+      - '***                                                     ***'
+      - '***********************************************************'
+      - '***********************************************************'
+      - '***********************************************************'
+  tags:
+    - plug
+    - vimrc

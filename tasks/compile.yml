@@ -1,0 +1,60 @@
+---
+
+- name: apt install deps
+  become: yes
+  apt:
+    state: latest
+    name:
+      - libx11-dev
+      - libxtst-dev
+      - xorg-dev  # for +clipboard
+      - xsel  # for vim clipboard in vscode
+      - exuberant-ctags  # for tagbar
+      - silversearcher-ag  # ag and ctrlp
+      - cmake
+      - python3-pip
+      - libncurses5-dev
+  when: ansible_pkg_mgr == 'apt'
+  tags:
+    - compile
+
+- name: get latest vim code
+  git:
+    repo: "{{git_repo}}"
+    dest: "{{git_dest}}"
+    version: "{{git_version}}"
+    clone: yes
+    update: yes
+    force: yes
+  tags:
+    - compile
+
+- name: config, compile and install vim
+  become: yes
+  command: "{{item}}"
+  args:
+    chdir: "{{git_dest}}"
+  loop:
+    - make distclean
+    - >
+      ./configure
+      --prefix={{configure_prefix}}
+      --with-features={{configure_with_features}}
+      --with-x
+      --enable-gui=auto
+      --enable-pythoninterp
+      --enable-python3interp
+      --enable-rubyinterp
+    - make
+    - make install
+  tags:
+    - compile
+
+- name: Unistall VIM if it is installed from the repository
+  become: yes
+  apt:
+    name: vim
+    state: absent
+  tags:
+    - compile
+

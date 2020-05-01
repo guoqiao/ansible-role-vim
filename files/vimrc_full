@@ -1,0 +1,129 @@
+"Turn on syntax highlighting.
+syntax on
+
+set tabstop=4       " number of visual spaces per TAB
+set softtabstop=4   " number of spaces in tab when editing
+set expandtab       " tabs are spaces
+
+set number          " show line numbers
+set showcmd         " show command in bottom bar
+set showmode        " show VIM mode
+set cursorline      " highlight current line
+
+set showmatch       " highlight matching [{()}]
+set incsearch       " search as characters are entered
+set hlsearch        " highlight matches
+" turn off search highlight by help of prressing 
+nnoremap <space> :nohlsearch<CR>
+
+set foldenable          " enable folding
+set foldlevelstart=10   " open most folds by default
+set foldnestmax=10      " 10 nested fold max
+set foldmethod=indent   " fold based on indent level
+" space open/closes folds
+nnoremap <leader>z za
+
+" move vertically by visual line
+nnoremap j gj
+nnoremap k gk
+
+set wildmenu        " visual autocomplete for command menu
+filetype indent on      " load filetype-specific indent files
+
+" Encoding
+set encoding=utf-8
+
+" Speed up scrolling in Vim
+set ttyfast
+
+" Status bar
+set laststatus=2
+
+" Display different types of white spaces.
+set list
+set listchars=tab:›\ ,trail:•,extends:#,nbsp:.
+
+let g:airline_powerline_fonts = 1
+
+set mouse=a " Enable mouse usage (all modes)
+" map Ctrl + a to ggvG in order to provide a simple way of select all
+map <A-S-a> <esc>gg0vG$<CR>
+" Map Ctrl+C to yank to system's clipboard (requires vim-gtk package on Ubuntu-Gnome)
+map <C-c> "+y<CR>
+
+" Map Ctrl+N to toggle NERDTree plugin
+map <C-n> :NERDTreeToggle<CR>
+
+
+autocmd FileType vim let b:vcm_tab_complete = 'vim'
+
+filetype plugin on      " load filetype-specific indent files
+" Resources:
+" * https://dougblack.io/words/a-good-vimrc.html
+" * https://www.linode.com/docs/tools-reference/tools/introduction-to-vim-customization/ 
+"
+let g:airline#extensions#tabline#enabled = 1
+set foldmethod=indent
+
+" Dont forget to: python3 ~/.vim/pack/vendor/start/YouCompleteMe/install.py
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+let g:ycm_python_binary_path = 'python'
+
+if has('SyntasticCheck')
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_yaml_checkers = ['yamllint']
+let g:syntastic_python_checkers = ['flake8']
+endif
+
+" Display relative and absolute line numbers simultaneously in Vim
+" https://www.vim.org/scripts/script.php?script_id=2351
+" call RltvNmbr#RltvNmbrCtrl(1)
+
+let g:vim_linguist_destination_language="fa"
+
+" Persistent Undo in Vim: do not forget to mkdir ~/.vim/undodir
+set undofile " Maintain undo history between sessions
+set undodir=~/.vim/undodir
+
+" Uncomment the following to have Vim jump to the last position when reopening a file
+if has("autocmd")
+          au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
+
+" Python runner
+map <F5> :terminal python3 %<cr>
+map <S-F5> :q<cr>
+
+call plug#begin()
+
+" A small sensible Vim configuration
+Plug 'tpope/vim-sensible'
+
+" A code-completion engine for Vim
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+
+" Retro groove color scheme for Vim 
+Plug 'morhetz/gruvbox'
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-fugitive'
+Plug 'preservim/nerdtree'
+Plug 'vim-syntastic/syntastic'
+
+" Initialize plugin system
+call plug#end()
+
+silent! colorscheme gruvbox
+set background=dark
+

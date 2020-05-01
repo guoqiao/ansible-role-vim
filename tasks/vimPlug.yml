@@ -7,6 +7,7 @@
     recurse: yes
   tags:
     - plug
+    - vimrc
 
 - name: Get the vim Plug 
   get_url:
@@ -14,11 +15,14 @@
     dest:  '{{vimplug_dest_path}}/plug.vim'
   tags:
     - plug
+    - vimrc
 
 - name: Run vimPlug install
   shell: vim -c ":PlugInstall gruvbox vim-sensible" -c q -c q 
   tags:
     - plug
+    - vimrc
   register: plug
+  when: vimrc_mode != "full"
 
 - debug: msg="{{ plug.stderr }}"

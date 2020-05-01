@@ -1,5 +1,8 @@
 ---
 
+# minimal, full
+vimrc_mode : "full"
+
 git_repo: 'https://github.com/vim/vim.git'
 git_version: master
 git_dest: /tmp/vim
