@@ -16,19 +16,6 @@
       - libncurses5-dev
   when: ansible_pkg_mgr == 'apt'
 
-- name: brew install deps
-  become: no
-  homebrew:
-    state: latest
-    update_homebrew: yes
-    name:
-      - zsh
-      - zsh-completions
-      - ctags-exuberant
-      - the_silver_searcher
-      - reattach-to-user-namespace
-  when: ansible_pkg_mgr == 'homebrew'
-
 - name: get latest vim code
   git:
     repo: "{{git_repo}}"
