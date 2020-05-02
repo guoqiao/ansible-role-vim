@@ -18,11 +18,10 @@
     - vimrc
 
 - name: Run vimPlug install
-  shell: vim -c ":PlugInstall gruvbox vim-sensible" -c q -c q 
+  shell: vim -c ":PlugInstall gruvbox syntastic nerdtree" -c q -c q 
   tags:
     - plug
     - vimrc
   register: plug
-  when: vimrc_mode != "full"
 
 - debug: msg="{{ plug.stderr }}"

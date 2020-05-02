@@ -51,13 +51,19 @@ cat >> DIY.yml <<EOF
   roles:
     - role: DevopsishVim
 EOF
-ansible-playbook -e ansible_python_interpreter=$(which python3)  --ask-become-pass -i localhost, DIY.yml
 ```
 
-If you want to just have vimrc and all plugins on your pre-installed vim run this command instead of the previous one:
+If you want to just have vimrc and all plugins on your pre-installed vim :
 
 ```
-ansible-playbook -t vimrc -e ansible_python_interpreter=/usr/bin/python3  --ask-become-pass -i localhost, DIY.yml
+ansible-playbook -t vimrc -e ansible_python_interpreter=$(which python3)  --ask-become-pass DIY.yml
+vim -c ":PlugInstall" 
+```
+
+But if you also like to compile and install Vim from the source run this command instead of the previous one:
+
+```
+ansible-playbook -e ansible_python_interpreter=$(which python3)  --ask-become-pass DIY.yml
 ```
 
 ToDo

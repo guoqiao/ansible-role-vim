@@ -14,14 +14,14 @@
   tags:
     - vimrc
 
-- name: stat .vimrc
-  stat: path={{config_dest}}
+- name: stat ~/.vimrc
+  stat: path=~/.vimrc
   register: vimrc_stat
   tags:
     - vimrc
 
-- name: Move vimrc to vimrc.old
-  command: mv {{config_dest}} {{config_dest}}.old
+- name: Move ~/.vimrc to vimrc.old
+  command: mv ~/.vimrc ~/.vimrc.old
   when: vimrc_stat.stat.exists
   tags:
     - vimrc
