@@ -1,7 +1,9 @@
 Ansible Role: vim
 =========
 
-This role will:
+![ScreenShot](https://raw.github.com/DevopsishFriends/DevopsishVim/master/screenshot.png)
+
+This role can:
 
 - clone latest vim code from github, compile and install
 - install vimrc file and plugins
